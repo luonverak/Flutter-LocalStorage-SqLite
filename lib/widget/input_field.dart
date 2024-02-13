@@ -15,7 +15,7 @@ class InputFieldWidget extends StatelessWidget {
     return TextField(
       controller: controller,
       decoration: InputDecoration(
-        border: OutlineInputBorder(),
+        border: const OutlineInputBorder(),
         hintText: hintText,
       ),
       maxLines: maxLines,
