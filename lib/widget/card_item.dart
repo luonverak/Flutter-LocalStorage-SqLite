@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:local_storage/controller/note_controller.dart';
 import 'package:local_storage/model/note_model.dart';
-
 import '../view/add_edit_screen.dart';
 import '../view/home_screen.dart';
 
