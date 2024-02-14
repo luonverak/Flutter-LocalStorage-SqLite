@@ -1,12 +1,36 @@
-import 'package:flutter/material.dart';
+import 'dart:math';
 
+import 'package:flutter/material.dart';
+import 'package:local_storage/controller/note_controller.dart';
+import 'package:local_storage/model/note_model.dart';
+import 'package:local_storage/view/home_screen.dart';
 import '../widget/font_style.dart';
 import '../widget/input_field.dart';
 
-class AddEditScreen extends StatelessWidget {
-  AddEditScreen({super.key});
+class AddEditScreen extends StatefulWidget {
+  AddEditScreen({super.key, this.noteModel});
+  late NoteModel? noteModel;
+  @override
+  State<AddEditScreen> createState() => _AddEditScreenState();
+}
+
+class _AddEditScreenState extends State<AddEditScreen> {
   final title = TextEditingController();
+
   final description = TextEditingController();
+
+  final time = DateTime.now();
+  reloadData() {
+    title.text = widget.noteModel!.title;
+    description.text = widget.noteModel!.description;
+  }
+
+  @override
+  void initState() {
+    widget.noteModel == null ? '' : reloadData();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,9 +45,9 @@ class AddEditScreen extends StatelessWidget {
             color: iconColor,
           ),
         ),
-        title: const Text(
-          'Add note',
-          style: TextStyle(
+        title: Text(
+          widget.noteModel == null ? 'Add note' : 'Edit note',
+          style: const TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.w600,
             color: textColor,
@@ -31,7 +55,39 @@ class AddEditScreen extends StatelessWidget {
         ),
         actions: [
           IconButton(
-            onPressed: () {},
+            onPressed: () async {
+              widget.noteModel == null
+                  ? await NoteController()
+                      .insertData(
+                        NoteModel(
+                          id: Random().nextInt(1000),
+                          title: title.text,
+                          description: description.text,
+                          time: '${time.year}-${time.month}-${time.day}',
+                        ),
+                      )
+                      .whenComplete(() => Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => HomeScreen(),
+                          ),
+                          (route) => false))
+                  : await NoteController()
+                      .updateData(
+                        NoteModel(
+                          id: widget.noteModel!.id,
+                          title: title.text,
+                          description: description.text,
+                          time: '${time.year}-${time.month}-${time.day}',
+                        ),
+                      )
+                      .whenComplete(() => Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => HomeScreen(),
+                          ),
+                          (route) => false));
+            },
             icon: const Icon(
               Icons.save,
               color: iconColor,
