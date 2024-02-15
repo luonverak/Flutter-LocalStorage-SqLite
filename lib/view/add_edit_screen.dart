@@ -20,6 +20,7 @@ class _AddEditScreenState extends State<AddEditScreen> {
   final description = TextEditingController();
 
   final time = DateTime.now();
+
   reloadData() {
     title.text = widget.noteModel!.title;
     description.text = widget.noteModel!.description;
